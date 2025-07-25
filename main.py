@@ -1,31 +1,27 @@
 from src.core.boot import iniciar_thor
 from getpass import getpass  
-from src.services.openai_service import question_to_chatgpt
+from src.interfaces.input.input_interface import text_input
+from src.core.brain import process_command
 
 def confirm_password():
-    senha_correta = "122456"
+    senha_correta = ""
     tentativa = getpass("Digite a senha de acesso: ")  
     if tentativa == senha_correta:
         print("✅ Acesso autorizado.")
         return True
     else:
-        print("❌ Acesso negado. Saindo do programa...")
+        print("Acesso negado. Saindo do programa...")
         return False
-
-#--------------------------------------------------------------------------------------------------------------------------------#
 
 def thor():
     iniciar_thor()
     print("Digite 'sair' para encerrar o assistente.\n")
 
     while True:
-        pergunta = input(">>")
-        if pergunta.lower() in ['sair', 'exit', 'quit']:
-            print("Encerrando...")
-            break
-
-        resposta = question_to_chatgpt(pergunta)
-        print(f"\nThor: {resposta}\n")
+        texto = text_input()
+        process_command(texto)
+        
 
 if __name__ == "__main__":
-    thor()
+    if confirm_password():
+        thor()
