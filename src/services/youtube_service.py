@@ -1,5 +1,8 @@
 import webbrowser
 import urllib.parse
+from pytube import YouTube
+import yt_dlp
+import os
 
 def youtube(comando: dict):
     action = comando.get("action")
@@ -15,3 +18,26 @@ def youtube(comando: dict):
 
     elif action == "abrir_home":
         webbrowser.open("https://www.youtube.com")
+
+def baixar_video(link, caminho_destino="videos_baixados"):
+    try:
+        if not os.path.exists(caminho_destino):
+            os.makedirs(caminho_destino)
+
+        ydl_opts = {
+            'format': 'mp4',
+            'outtmpl': os.path.join(caminho_destino, '%(title)s.%(ext)s'),
+            'quiet': False,
+            'no_warnings': True,
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            print(f"Baixando: {link}")
+            info = ydl.extract_info(link, download=True)
+            titulo = info.get("title", "vídeo")
+            print("Download concluído!")
+            return f"Download do vídeo '{titulo}' concluído com sucesso."
+
+    except Exception as e:
+        print("Erro ao baixar vídeo:", e)
+        return f"Erro ao baixar o vídeo: {str(e)}"
