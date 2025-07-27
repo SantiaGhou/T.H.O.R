@@ -3,75 +3,88 @@ from src.services import youtube_service
 from ..interfaces.input.input_interface import text_input
 import json
 
-def extrair_json(texto: str) -> str:
-    start = texto.find('{')
-    end = texto.rfind('}') + 1
+def extract_json(text: str) -> str:
+    start = text.find('{')
+    end = text.rfind('}') + 1
     if start == -1 or end == -1:
         raise ValueError("JSON não encontrado na resposta")
-    return texto[start:end]
+    return text[start:end]
 
-def process_command(texto_usuario: str):
+def process_command(user_input: str):
     prompt = f"""
 Você é o cérebro do T.H.O.R. Dado o comando do usuário, retorne um JSON com:
-- controller: nome do serviço (ex: youtube)
-- action: ação que deve ser executada (ex: buscar_video, abrir_home, baixar_video)
-- parâmetros relevantes com nomes simples como 'query', 'link' ou 'termo_pesquisa'
-- sempre inclua o campo "link" se o usuário deseja baixar um vídeo, mesmo que ele não tenha enviado diretamente o link
+- controller: nome do serviço (ex: youtube, os, openai)
+- action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video)
+- parâmetros relevantes com nomes simples como 'query', 'link' ou 'termo'
 
-Apenas utilize "action": "baixar_video" se o comando do usuário:
-- contiver um link do YouTube (ex: "https://www.youtube.com/...")
-- ou for uma ordem direta como "baixe esse vídeo do YouTube", "faça download do vídeo X do YouTube"
+Para YouTube:
+- Use "action": "baixar_video" apenas se:
+  - o usuário fornecer um link do YouTube (ex: https://www.youtube.com/...)
+  - ou der um comando direto como "baixe esse vídeo do YouTube", "faça download do vídeo X do YouTube"
+- Sempre inclua o campo "link" se o usuário quiser baixar um vídeo.
 
-Não bloqueie downloads se o comando for claro e direto.
-
-Comando do usuário: "{texto_usuario}"
+Para projetos locais:
+- Se o usuário pedir para abrir um projeto local da pasta GitHub (ex: "abra o projeto do Fitout"), retorne:
+{{
+  "controller": "os",
+  "action": "abrir_projeto",
+  "params": {{
+    "query": "nome_do_projeto"
+  }}
+}}
 
 Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
+
+Comando do usuário: "{user_input}"
 """
 
-    resposta = openai_service.question_to_chatgpt(prompt)
- 
+    response = openai_service.question_to_chatgpt(prompt)
 
     try:
-        json_str = extrair_json(resposta)
-        dados = json.loads(json_str)
-        controller = dados.get("controller")
-        action = dados.get("action")
-        parametros = dados.get("parametros", {})
+        json_str = extract_json(response)
+        data = json.loads(json_str)
+        controller = data.get("controller")
+        action = data.get("action")
+        params = data.get("params", {})
 
         if controller == "youtube":
             if action == "baixar_video":
                 link = (
-                    parametros.get("link")
-                    or parametros.get("query")
-                    or parametros.get("termo_pesquisa")
+                    params.get("link")
+                    or params.get("query")
+                    or params.get("termo")
                 )
-                
-                
+
                 if not link:
-                    print("[?] Claro sem problemas. Por favor, cole o link do vídeo do YouTube que vc quer:")
+                    print("[?] Sem problemas. Cole aqui o link do vídeo que você quer baixar:")
                     link = input(">>> ")
 
                 if link:
                     from src.services.youtube_service import baixar_video
-                    resultado = baixar_video(link)
-                    print(resultado)
+                    result = baixar_video(link)
+                    print(result)
                 else:
-                    print("[X] Nenhum link fornecido. Cancelando operação.")
-
+                    print("[X] Nenhum link informado. Operação cancelada.")
             else:
                 print("[INFO] Chamando youtube_service...")
-                youtube_service.youtube(dados)
+                youtube_service.youtube(data)
+
+        elif controller == "os":
+            if action == "abrir_projeto":
+                from src.services.os_service import open_project
+                result = open_project(params)
+                print(result)
 
         elif controller == "openai":
-            resposta_openai = openai_service.question_to_chatgpt(texto_usuario)
-            print(resposta_openai)
+            openai_response = openai_service.question_to_chatgpt(user_input)
+            print(openai_response)
+
         else:
-            resposta_openai = openai_service.question_to_chatgpt(texto_usuario)
-            print(resposta_openai)
+            fallback_response = openai_service.question_to_chatgpt(user_input)
+            print(fallback_response)
 
     except Exception as e:
         print("[X] Erro no brain:", e)
-        print("Resposta bruta:", resposta)
-        resposta_openai = openai_service.question_to_chatgpt(texto_usuario)
-        print(resposta_openai)
+        print("Resposta bruta:", response)
+        fallback_response = openai_service.question_to_chatgpt(user_input)
+        print(fallback_response)
