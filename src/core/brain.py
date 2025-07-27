@@ -75,6 +75,12 @@ Comando do usuário: "{user_input}"
                 result = open_project(params)
                 print(result)
 
+            elif action == "status_sistema" or action == "get_system_status":
+                from src.services.os_service import get_system_status
+                result = get_system_status()
+                print(result)
+
+
         elif controller == "openai":
             openai_response = openai_service.question_to_chatgpt(user_input)
             print(openai_response)

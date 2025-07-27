@@ -1,5 +1,6 @@
 import os
 import difflib
+import psutil
 
 
 GITHUB_PATH = r"C:\Users\Filipe Santiago\Documents\GitHub"
@@ -39,3 +40,15 @@ def open_project(params: dict):
     if path:
         os.system(f'code "{path}"')
     return message
+
+def get_system_status():
+    cpu = psutil.cpu_percent()
+    ram = psutil.virtual_memory().percent
+    disk = psutil.disk_usage('/').percent
+
+    return f"""
+[📊 STATUS DO SISTEMA]
+CPU: {cpu}%
+RAM: {ram}%
+Disco: {disk}%
+"""
