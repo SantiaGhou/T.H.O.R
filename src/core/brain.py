@@ -1,6 +1,6 @@
 import json
 import os
-from src.services import youtube_service, ai_service, spotify_service, os_service
+from src.services import youtube_service, ai_service, spotify_service, os_service , code_ai_service
 from ..interfaces.input.input_interface import text_input
 
 HISTORY_FILE = "conversation_history.json"
@@ -100,6 +100,11 @@ Se não conseguir classificar claramente o comando, envie:
   "action": "parar_musica",
   "params": {{}}
 }}
+- Para perguntas sobre PROGRAMAÇÃO, CÓDIGO, SCRIPTS, ALGORITMOS, BUGS, PYTHON, JAVASCRIPT, etc., use:
+{{
+  "controller": "code_ai",
+  "action": "gerar_codigo"
+}}
 Comando do usuário: "{user_input}"
 Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
 """
@@ -114,6 +119,10 @@ Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
         params = data.get("params", {})
 
         conversation_history.append({"role": "user", "content": user_input})
+        if controller == "code_ai":
+            response = code_ai_service.get_code_suggestion(conversation_history)
+            print(response)
+            conversation_history.append({"role": "assistant", "content": response})
 
         if controller == "youtube":
             if action == "baixar_video":
