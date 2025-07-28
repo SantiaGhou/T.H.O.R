@@ -1,4 +1,4 @@
-from src.services import openai_service
+from services import ai_service
 from src.services import youtube_service
 from ..interfaces.input.input_interface import text_input
 import json
@@ -93,7 +93,7 @@ Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
 Comando do usuário: "{user_input}"
 """
 
-    response = openai_service.question_to_chatgpt(prompt)
+    response = ai_service.question_to_chatgpt(prompt)
 
     try:
         json_str = extract_json(response)
@@ -150,15 +150,15 @@ Comando do usuário: "{user_input}"
                     print("[X] Nenhum nome ou URI foi informado.")
 
         elif controller == "openai":
-            openai_response = openai_service.question_to_chatgpt(user_input)
+            openai_response = ai_service.question_to_chatgpt(user_input)
             print(openai_response)
 
         else:
-            fallback_response = openai_service.question_to_chatgpt(user_input)
+            fallback_response = ai_service.question_to_chatgpt(user_input)
             print(fallback_response)
 
     except Exception as e:
         print("[X] Erro no brain:", e)
         print("Resposta bruta:", response)
-        fallback_response = openai_service.question_to_chatgpt(user_input)
+        fallback_response = ai_service.question_to_chatgpt(user_input)
         print(fallback_response)
