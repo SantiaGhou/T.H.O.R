@@ -6,10 +6,9 @@ import os
 
 def youtube(comando: dict):
     action = comando.get("action")
-    parametros = comando.get("parametros", {})
+    parametros = comando.get("params", {}) 
 
-
-    query = parametros.get("termo_pesquisa") or comando.get("query", "")
+    query = parametros.get("query") or parametros.get("termo") or ""
 
     if action == "buscar_video" or action == "abrir_video":
         if query:

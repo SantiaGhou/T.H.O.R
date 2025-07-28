@@ -13,8 +13,8 @@ def extract_json(text: str) -> str:
 def process_command(user_input: str):
     prompt = f"""
 Você é o cérebro do T.H.O.R. Dado o comando do usuário, retorne um JSON com:
-- controller: nome do serviço (ex: youtube, os, openai)
-- action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video, status_sistema, responder)
+- controller: nome do serviço (ex: youtube, os, openai, spotify)
+- action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video, status_sistema, responder, tocar)
 - parâmetros relevantes com nomes simples como 'query', 'link' ou 'termo'
 
 Para YouTube:
@@ -57,6 +57,16 @@ Para verificar o status da máquina (CPU, RAM, Disco):
   }}
 }}
 
+Para Spotify:
+- Se o usuário pedir para tocar uma música, playlist ou álbum, retorne:
+{{
+  "controller": "spotify",
+  "action": "tocar",
+  "params": {{
+    "query": "nome da música ou artista"
+  }}
+}}
+
 Se não conseguir classificar claramente o comando, envie como fallback:
 {{
   "controller": "openai",
@@ -65,13 +75,23 @@ Se não conseguir classificar claramente o comando, envie como fallback:
     "query": "texto original da pergunta"
   }}
 }}
+Para YouTube:
+- Use "action": "baixar_video" apenas se:
+  ...
+- Se o usuário pedir para procurar ou mostrar vídeos de alguém ou sobre algum tema (ex: "procura vídeo do Felca", "quero ver algo do Ei Nerd", "vídeo sobre eletricidade"), use:
+{{
+  "controller": "youtube",
+  "action": "buscar_video",
+  "params": {{
+    "query": "tema ou nome procurado"
+  }}
+}}
+
 
 Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
 
 Comando do usuário: "{user_input}"
 """
-
-
 
     response = openai_service.question_to_chatgpt(prompt)
 
@@ -115,6 +135,19 @@ Comando do usuário: "{user_input}"
                 result = get_system_status()
                 print(result)
 
+        elif controller == "spotify":
+            if action == "tocar":
+                from src.services.spotify_service import tocar, buscar_uri_por_nome
+                query = params.get("query") or params.get("uri")
+                if query:
+                    uri = query if query.startswith("spotify:") else buscar_uri_por_nome(query)
+                    if uri:
+                        result = tocar(uri)
+                        print(result)
+                    else:
+                        print(f"[X] Não foi possível encontrar a música: {query}")
+                else:
+                    print("[X] Nenhum nome ou URI foi informado.")
 
         elif controller == "openai":
             openai_response = openai_service.question_to_chatgpt(user_input)
