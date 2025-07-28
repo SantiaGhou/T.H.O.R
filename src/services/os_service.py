@@ -1,9 +1,11 @@
 import os
 import difflib
 import psutil
+import dotenv
+import platform
+import socket
 
-
-GITHUB_PATH = r"C:\Users\Filipe Santiago\Documents\GitHub"
+GITHUB_PATH = dotenv.get_key('.env', 'GITHUB_PATH')
 
 def list_projects():
     try:
@@ -19,8 +21,6 @@ def find_project(user_input):
         return None, "[X] No projects found in GitHub folder."
 
     user_input = user_input.lower()
-    
-
     matches = difflib.get_close_matches(user_input, projects, n=1, cutoff=0.4)
     
     if matches:
@@ -52,3 +52,41 @@ CPU: {cpu}%
 RAM: {ram}%
 Disco: {disk}%
 """
+
+def listar_processos_pesados(top=5):
+    processos = []
+    for proc in psutil.process_iter(['pid', 'name', 'memory_percent']):
+        try:
+            info = proc.info
+            if info['memory_percent'] > 0.1:  
+                processos.append(info)
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+    processos.sort(key=lambda x: x['memory_percent'], reverse=True)
+    top_procs = processos[:top]
+
+    resposta = "[💾 Processos que mais usam RAM agora]\n"
+    for p in top_procs:
+        resposta += f"- {p['name']} (PID {p['pid']}): {p['memory_percent']:.1f}%\n"
+
+    return resposta
+
+def get_system_info():
+    info = {
+        "Sistema Operacional": platform.system(),
+        "Versão do SO": platform.version(),
+        "Distribuição": platform.platform(),
+        "Nome da Máquina": socket.gethostname(),
+        "Arquitetura": platform.machine(),
+        "Processador": platform.processor(),
+        "CPU Física": psutil.cpu_count(logical=False),
+        "CPU Lógica": psutil.cpu_count(logical=True),
+        "RAM Total": f"{round(psutil.virtual_memory().total / (1024**3), 2)} GB"
+    }
+
+    output = "[🧠 CONFIGURAÇÕES DO SISTEMA]\n"
+    for chave, valor in info.items():
+        output += f"{chave}: {valor}\n"
+
+    return output

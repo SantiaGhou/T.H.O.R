@@ -14,7 +14,7 @@ def process_command(user_input: str):
     prompt = f"""
 Você é o cérebro do T.H.O.R. Dado o comando do usuário, retorne um JSON com:
 - controller: nome do serviço (ex: youtube, os, openai)
-- action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video)
+- action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video, status_sistema, responder)
 - parâmetros relevantes com nomes simples como 'query', 'link' ou 'termo'
 
 Para YouTube:
@@ -33,10 +33,45 @@ Para projetos locais:
   }}
 }}
 
+Para verificar o status da máquina (CPU, RAM, Disco):
+- Se o usuário quiser **consultar** o status atual do sistema, com frases como:
+  - "como está meu PC"
+  - "status da máquina"
+  - "quais os status da minha máquina"
+  - "uso da CPU"
+  - "memória RAM"
+  - "como está o desempenho do sistema"
+- Retorne:
+{{
+  "controller": "os",
+  "action": "status_sistema",
+  "params": {{}}
+}}
+
+⚠️ Se o usuário estiver perguntando **por que está alto**, **como resolver**, **como melhorar o desempenho**, ou pedindo **sugestões para reduzir uso de RAM ou CPU**, **não** retorne "status_sistema". Nesse caso, responda com:
+{{
+  "controller": "openai",
+  "action": "responder",
+  "params": {{
+    "query": "texto original da pergunta"
+  }}
+}}
+
+Se não conseguir classificar claramente o comando, envie como fallback:
+{{
+  "controller": "openai",
+  "action": "responder",
+  "params": {{
+    "query": "texto original da pergunta"
+  }}
+}}
+
 Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
 
 Comando do usuário: "{user_input}"
 """
+
+
 
     response = openai_service.question_to_chatgpt(prompt)
 
