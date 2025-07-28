@@ -1,6 +1,6 @@
 import json
 import os
-from src.services import youtube_service, ai_service , spotify_service , os_service
+from src.services import youtube_service, ai_service, spotify_service, os_service
 from ..interfaces.input.input_interface import text_input
 
 HISTORY_FILE = "conversation_history.json"
@@ -94,7 +94,12 @@ Se não conseguir classificar claramente o comando, envie:
     "query": "texto original da pergunta"
   }}
 }}
-
+- Se o usuário pedir para PARAR a música (ex: "pare a música", "para de tocar", "stop"), retorne:
+{{
+  "controller": "spotify",
+  "action": "parar_musica",
+  "params": {{}}
+}}
 Comando do usuário: "{user_input}"
 Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
 """
@@ -147,17 +152,20 @@ Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
 
         elif controller == "spotify":
             if action == "tocar":
-                from src.services.spotify_service import tocar, buscar_uri_por_nome
                 query = params.get("query") or params.get("uri")
                 if query:
-                    uri = query if query.startswith("spotify:") else buscar_uri_por_nome(query)
+                    uri = query if query.startswith("spotify:") else spotify_service.buscar_uri_por_nome(query)
                     if uri:
-                        result = tocar(uri)
+                        result = spotify_service.tocar(uri)
                         print(result)
                     else:
                         print(f"[X] Não foi possível encontrar a música: {query}")
                 else:
                     print("[X] Nenhum nome ou URI foi informado.")
+
+            elif action == "parar_musica":
+                result = spotify_service.parar_musica()
+                print(result)
 
             conversation_history.append({"role": "assistant", "content": "Comando Spotify executado."})
 
@@ -168,7 +176,7 @@ Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
             print(openai_response)
 
         else:
-            fallback_response = ai_service.question_to_chatgpt(conversation_history)
+            fallback_response = ai_service.question_to_chatgpt(conversation_history + [{"role": "user", "content": user_input}])
             conversation_history.append({"role": "assistant", "content": fallback_response})
             print(fallback_response)
 

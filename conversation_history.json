@@ -1,0 +1,42 @@
+[
+    {
+        "role": "user",
+        "content": "toca paranoid do black sabbath p mim"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "para"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "para a musica"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "toca uma musica do ozzy ousborn ai"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "pare a musica"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    }
+]

@@ -34,3 +34,18 @@ def tocar_por_nome(nome):
     if not uri:
         return f"[X] Música '{nome}' não encontrada no Spotify."
     return tocar(uri)
+
+def parar_musica():
+   
+    try:
+        playback = sp.current_playback()
+        if not playback:
+            return "[i] Nenhuma música tocando no momento."
+   
+        if playback and playback['is_playing']:
+            sp.pause_playback()
+            return "[✔] Música pausada!"
+        else:
+            return "[i] Nenhuma música tocando no momento."
+    except Exception as e:
+        return f"[X] Erro ao tentar parar a música: {e}"
