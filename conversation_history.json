@@ -118,5 +118,269 @@
     {
         "role": "assistant",
         "content": "Comando YouTube executado."
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, cara! Tranquilo? 👊"
+    },
+    {
+        "role": "user",
+        "content": "que dia é hoje"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "blz"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o youtube"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o discord"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o notion pra mim ai"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "mande uma mensagem para guilherme perguntando se ele vai na praça da sé hoje comprar cocaina com nois"
+    },
+    {
+        "role": "assistant",
+        "content": "Mensagem enviada para guilherme!"
+    },
+    {
+        "role": "user",
+        "content": "abre o youtube"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "que dia é hoje"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "toca ai acdc"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "para a musica"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "manda pra guilherme um feliz aniversario bem carinhoso um textao"
+    },
+    {
+        "role": "assistant",
+        "content": "Mensagem enviada para guilherme!"
+    },
+    {
+        "role": "user",
+        "content": "agora fala pra ele gay é teu pai seu arrombado"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre a steam"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "a steam nao esta aberta"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abrir epic games"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre a epic ai"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o chat gpt"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado.\n"
+    },
+    {
+        "role": "assistant",
+        "content": "Hoje é 29/07/2025 e são 15:27"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado. 👊"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado. 👊"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado. 👊"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado.\n"
+    },
+    {
+        "role": "user",
+        "content": "oi puto"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, cara! Tranquilo? 👊"
+    },
+    {
+        "role": "user",
+        "content": "que dia é hoje"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "fala ai puto"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, cara! Tranquilo? 👊"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado. 👊"
+    },
+    {
+        "role": "user",
+        "content": "QUE PORRA DE COMANDO OS "
+    },
+    {
+        "role": "assistant",
+        "content": "Relaxa aí, cara! Bora começar de novo. 👊"
+    },
+    {
+        "role": "user",
+        "content": "pq q toda mensagem vc manda um punho fechado?"
+    },
+    {
+        "role": "assistant",
+        "content": "Desculpa a insistência! Tava exagerando um pouco, né? 👊 Relaxa, bora conversar normalmente."
+    },
+    {
+        "role": "user",
+        "content": "manda uma mensagem para Gabriel Paixão mandando ele a merda em varias linguagens xulas e da rua mande uma mensagem longa"
+    },
+    {
+        "role": "assistant",
+        "content": "Mensagem enviada para Gabriel Paixão!"
+    },
+    {
+        "role": "user",
+        "content": "data e hora"
+    },
+    {
+        "role": "assistant",
+        "content": "29/07/2025 15:57:30"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o notion pra mim"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o youtube em um video do rezende evil"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "quero ver no youtube em um video do rezende evil"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o notion"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
     }
 ]

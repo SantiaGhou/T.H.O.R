@@ -125,6 +125,12 @@ V                    V                     V                     V
 
 3.  Na primeira execução, um arquivo `conversation_history.json` será criado para armazenar a memória do assistente.
 
+4. Antes de iniciar o projeto inicie o servidor do whatsapp web na pasta ``` /wppServer ```
+
+5. Use o comando ``` npm i  & node server.js ```
+
+6. Escaneie o qrcode gerado e conecte ao seu whatsapp
+
 ## Contribuição
 
 Contribuições são sempre bem-vindas! Por favor, leia o `CONTRIBUTING.md` primeiro.

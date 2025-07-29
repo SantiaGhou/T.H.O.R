@@ -25,7 +25,7 @@ def extract_json(text: str) -> str:
     return text[start:end]
 
 def mensagem_exata(contexto):
-    match = re.search(r'"([^"]+)"|\'([^\']+)\'', contexto)
+    match = re.search(r'"([^\"]+)"|\'([^\']+)\'', contexto)
     if match:
         return match.group(1) or match.group(2)
     padroes = [
@@ -46,91 +46,135 @@ def process_command(user_input: str):
     global conversation_history
 
     prompt = f"""
-    Você é o cérebro do T.H.O.R. Dado o comando do usuário, retorne um JSON com:
-    - controller: nome do serviço (ex: youtube, os, openai, spotify, whatsapp)
-    - action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video, status_sistema, responder, tocar, enviar_mensagem)
-    - parâmetros relevantes com nomes simples como 'query', 'link', 'termo', 'contato', 'mensagem' ou 'contexto'
+    Você é o cérebro do T.H.O.R., um sistema de interpretação de comandos do usuário. 
+    Seu objetivo é analisar a intenção do usuário e retornar um JSON bem-formado, no seguinte formato:
 
-    Para YouTube:
-    - Use "action": "baixar_video" apenas se:
-      - o usuário fornecer um link do YouTube (ex: https://www.youtube.com/...)
-      - ou der um comando direto como "baixe esse vídeo do YouTube", "faça download do vídeo X do YouTube"
-    - Sempre inclua o campo "link" se o usuário quiser baixar um vídeo.
-
-    Se o usuário pedir para procurar ou mostrar vídeos de alguém ou sobre algum tema (ex: "procura vídeo do Felca", "quero ver algo do Ei Nerd", "vídeo sobre eletricidade"), use:
     {{
-      "controller": "youtube",
-      "action": "buscar_video",
-      "params": {{
-        "query": "tema ou nome procurado"
-      }}
+    "controller": "<nome_do_serviço>",
+    "action": "<ação_a_ser_executada>",
+    "params": {{
+        "chave": "valor"
+    }}
     }}
 
-    Para projetos locais:
-    - Se o usuário pedir para abrir um projeto local da pasta GitHub (ex: "abra o projeto do Fitout"), retorne:
+    REGRAS FUNDAMENTAIS:
+    1. O retorno deve ser **exclusivamente um JSON válido** e único. Nunca adicione explicações, comentários, frases soltas, ou qualquer texto fora do JSON.
+    2. Os campos obrigatórios são: `controller`, `action` e `params`. Mesmo se `params` estiver vazio, retorne `params: {{}}`.
+    3. Todos os valores devem estar em string, exceto quando for claramente necessário um número.
+    4. Sempre normalize os textos dos parâmetros (ex: remover espaços extras, corrigir quebras de linha, etc.).
+
+    MÓDULOS SUPORTADOS E SUAS REGRAS:
+
+    ### YouTube:
+    - Se o usuário fornecer um **link do YouTube** (ex: "https://www.youtube.com/...") ou falar algo como "baixe esse vídeo", use:
     {{
-      "controller": "os",
-      "action": "abrir_projeto",
-      "params": {{
-        "query": "nome_do_projeto"
-      }}
+    "controller": "youtube",
+    "action": "baixar_video",
+    "params": {{
+        "link": "<link_do_video>"
+    }}
+    }}
+    - Se o usuário pedir **busca de vídeos** (ex: "procura vídeo do Felca"), use:
+    {{
+    "controller": "youtube",
+    "action": "buscar_video",
+    "params": {{
+        "query": "<termo_busca>"
+    }}
     }}
 
-    Para verificar o status da máquina (CPU, RAM, Disco):
-    - Se o usuário quiser consultar o status atual do sistema, use:
+    ### Projetos Locais (GitHub):
+    - Se o usuário falar "abra o projeto X" ou "abre o projeto Y", use:
     {{
-      "controller": "os",
-      "action": "status_sistema",
-      "params": {{}}
+    "controller": "os",
+    "action": "abrir_projeto",
+    "params": {{
+        "query": "<nome_do_projeto>"
+    }}
     }}
 
-    Se ele pedir dicas de como melhorar desempenho, resolver problemas de lentidão, etc, retorne:
+    ### Programas Instalados:
+    - Se o usuário falar "abre word", "abre cs", "abre fortnite", etc.:
     {{
-      "controller": "openai",
-      "action": "responder",
-      "params": {{
-        "query": "texto original da pergunta"
-      }}
+    "controller": "os",
+    "action": "abrir_programa",
+    "params": {{
+        "query": "<nome_do_programa>"
+    }}
     }}
 
-    Para Spotify:
-    - Se o usuário pedir para tocar uma música, playlist ou álbum:
+    ### Status do Sistema:
+    - Para checar CPU, RAM ou Disco:
     {{
-      "controller": "spotify",
-      "action": "tocar",
-      "params": {{
-        "query": "nome da música ou artista"
-      }}
+    "controller": "os",
+    "action": "status_sistema",
+    "params": {{}}
     }}
 
-    Se não conseguir classificar claramente o comando, envie:
+    - Se perguntar **data e hora**:
     {{
-      "controller": "openai",
-      "action": "responder",
-      "params": {{
-        "query": "texto original da pergunta"
-      }}
-    }}
-    - Se o usuário pedir para PARAR a música (ex: "pare a música", "para de tocar", "stop"), retorne:
-    {{
-      "controller": "spotify",
-      "action": "parar_musica",
-      "params": {{}}
-    }}
-    - Para perguntas sobre PROGRAMAÇÃO, CÓDIGO, SCRIPTS, ALGORITMOS, BUGS, PYTHON, JAVASCRIPT, etc., use:
-    {{
-      "controller": "code_ai",
-      "action": "gerar_codigo"
+    "controller": "os",
+    "action": "get_data",
+    "params": {{}}
     }}
 
-    Para enviar mensagem no WhatsApp:
-    - Se o usuário pedir para enviar uma mensagem exata (entre aspas ou dizendo "exatamente assim"), envie o texto literalmente, sem modificar e sem passar pela IA.
-    - Se o usuário pedir para enviar uma mensagem genérica, gere uma mensagem simpática, educada, e termine com: "Mensagem enviada pelo assistente do Filipe."
-    - Fale sempre como assistente, nunca como o próprio usuário.
+    ### Diagnóstico e Desempenho:
+    - Se pedir dicas de performance, lentidão, solução de problemas, etc.:
+    {{
+    "controller": "openai",
+    "action": "responder",
+    "params": {{
+        "query": "<texto_original_da_pergunta>"
+    }}
+    }}
 
-    Comando do usuário: "{user_input}"
-    Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
+    ### Spotify:
+    - Para tocar música, playlist ou álbum:
+    {{
+    "controller": "spotify",
+    "action": "tocar",
+    "params": {{
+        "query": "<nome_musica_ou_artista>"
+    }}
+    }}
+    - Para parar música:
+    {{
+    "controller": "spotify",
+    "action": "parar_musica",
+    "params": {{}}
+    }}
+
+    ### WhatsApp:
+    - Se o usuário pedir para **enviar mensagem**:
+    - Se for **mensagem exata** (entre aspas ou "exatamente assim"), envie literalmente.
+    - Caso contrário, gere uma mensagem  terminando com "Mensagem enviada por T.H.O.R."
+
+    Formato:
+    {{
+    "controller": "whatsapp",
+    "action": "enviar_mensagem",
+    "params": {{
+        "contato": "<nome_contato>",
+        "mensagem": "<mensagem_final>"
+    }}
+    }}
+
+    ### Programação:
+    - Para perguntas sobre código, scripts, bugs, algoritmos:
+    {{
+    "controller": "code_ai",
+    "action": "gerar_codigo",
+    "params": {{
+        "query": "<texto_da_pergunta>"
+    }}
+    }}
+
+    ---
+
+    COMANDO DO USUÁRIO: "{user_input}"
+    Responda SOMENTE com o JSON.
     """
+
 
     try:
         response_text = ai_service.question_to_chatgpt([{"role": "user", "content": prompt}])
@@ -173,15 +217,20 @@ def process_command(user_input: str):
         elif controller == "os":
             if action == "abrir_projeto":
                 from src.services.os_service import open_project
-                result = open_project(params)
-                print(result)
-
+                print(open_project(params))
             elif action == "status_sistema":
                 from src.services.os_service import get_system_status
-                result = get_system_status()
+                print(get_system_status())
+            elif action == "abrir_programa":
+                from src.services.os_service import open_program
+                print(open_program(params))
+            elif action == "get_data":
+                from src.services.os_service import get_data
+                result = get_data()
                 print(result)
+                conversation_history.append({"role":"assistant","content":result})
+            conversation_history.append({"role":"assistant","content":"Comando OS executado."})
 
-            conversation_history.append({"role": "assistant", "content": "Comando OS executado."})
 
         elif controller == "spotify":
             if action == "tocar":
