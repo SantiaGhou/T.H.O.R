@@ -20,6 +20,7 @@
 ## Recursos
 
 - **Suporte a abrir o youtube e baixar videos:** utilizando o Pytube e o Webbrowser
+- **Suporte a envio de mensagens no Whatsapp** utilizando o whatsapp webjs
 - **IA Local-First:** Opera primariamente com modelos de linguagem rodando localmente via **Ollama**, garantindo privacidade e funcionamento offline.
 - **Sistema de IA Dupla:** Utiliza um sistema de roteamento inteligente para direcionar as tarefas:
     - **IA de Conversação Geral (Gemma):** Para diálogos, classificação de comandos e tarefas gerais.

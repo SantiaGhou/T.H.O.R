@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "role": "user",
+        "content": "envia uma mensagem para guilherme"
+    },
+    {
+        "role": "user",
+        "content": "manda pra guilherme Ta pronto o thor fala com vc por wpp"
+    },
+    {
+        "role": "assistant",
+        "content": "[X] Erro ao enviar mensagem: Erro ao enviar: TypeError: Cannot read properties of null (reading 'evaluate')"
+    }
+]

@@ -12,7 +12,7 @@ def enviar_mensagem(contato, mensagem):
             print(f"Mensagem enviada para {contato}!")
             return f"Mensagem enviada para {contato}!"
 
-        # Trata retorno em JSON com sugestões de contato
+   
         try:
             resposta_json = r.json()
         except Exception:
