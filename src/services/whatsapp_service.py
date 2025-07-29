@@ -12,7 +12,6 @@ def enviar_mensagem(contato, mensagem):
             print(f"Mensagem enviada para {contato}!")
             return f"Mensagem enviada para {contato}!"
 
-   
         try:
             resposta_json = r.json()
         except Exception:
@@ -23,7 +22,8 @@ def enviar_mensagem(contato, mensagem):
             for sugestao in sugestoes:
                 resposta = input(f'Contato sugerido: {sugestao}. É esse? [s/n]: ').strip().lower()
                 if resposta == 's':
-                    # Tenta enviar de novo com o nome sugerido
+                    if not mensagem:
+                        mensagem = input(f'Qual mensagem devo enviar para {sugestao}? ').strip()
                     return enviar_mensagem(sugestao, mensagem)
             print("[X] Nenhum contato confirmado. Mensagem NÃO enviada.")
             return "[X] Nenhum contato confirmado. Mensagem NÃO enviada."

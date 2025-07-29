@@ -212,6 +212,10 @@ def process_command(user_input: str):
             from src.services.whatsapp_service import enviar_mensagem
             contato = params.get("contato") or params.get("query") or params.get("destinatario")
             contexto = params.get("contexto") or params.get("mensagem") or params.get("msg") or params.get("texto")
+            if not contato:
+                contato = input("Pra quem você quer enviar? ").strip()
+            if not contexto:
+                contexto = input(f"O que você quer enviar para {contato}? ").strip()
             if contato and contexto:
                 texto_exato = mensagem_exata(contexto)
                 if texto_exato:
