@@ -1,6 +1,7 @@
 import json
 import os
-from src.services import youtube_service, ai_service, spotify_service, os_service , code_ai_service
+import re
+from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service
 from ..interfaces.input.input_interface import text_input
 
 HISTORY_FILE = "conversation_history.json"
@@ -23,91 +24,113 @@ def extract_json(text: str) -> str:
         raise ValueError("JSON não encontrado na resposta")
     return text[start:end]
 
+def mensagem_exata(contexto):
+    match = re.search(r'"([^"]+)"|\'([^\']+)\'', contexto)
+    if match:
+        return match.group(1) or match.group(2)
+    padroes = [
+        r"exatamente assim: (.+)",
+        r"envia isso: (.+)",
+        r"mensagem literal: (.+)",
+        r"manda (.+) exatamente"
+    ]
+    for padrao in padroes:
+        m2 = re.search(padrao, contexto, re.IGNORECASE)
+        if m2:
+            return m2.group(1).strip()
+    return None
+
 conversation_history = load_history()
 
 def process_command(user_input: str):
     global conversation_history
 
     prompt = f"""
-Você é o cérebro do T.H.O.R. Dado o comando do usuário, retorne um JSON com:
-- controller: nome do serviço (ex: youtube, os, openai, spotify)
-- action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video, status_sistema, responder, tocar)
-- parâmetros relevantes com nomes simples como 'query', 'link' ou 'termo'
+    Você é o cérebro do T.H.O.R. Dado o comando do usuário, retorne um JSON com:
+    - controller: nome do serviço (ex: youtube, os, openai, spotify, whatsapp)
+    - action: ação que deve ser executada (ex: buscar_video, abrir_home, abrir_projeto, baixar_video, status_sistema, responder, tocar, enviar_mensagem)
+    - parâmetros relevantes com nomes simples como 'query', 'link', 'termo', 'contato', 'mensagem' ou 'contexto'
 
-Para YouTube:
-- Use "action": "baixar_video" apenas se:
-  - o usuário fornecer um link do YouTube (ex: https://www.youtube.com/...)
-  - ou der um comando direto como "baixe esse vídeo do YouTube", "faça download do vídeo X do YouTube"
-- Sempre inclua o campo "link" se o usuário quiser baixar um vídeo.
+    Para YouTube:
+    - Use "action": "baixar_video" apenas se:
+      - o usuário fornecer um link do YouTube (ex: https://www.youtube.com/...)
+      - ou der um comando direto como "baixe esse vídeo do YouTube", "faça download do vídeo X do YouTube"
+    - Sempre inclua o campo "link" se o usuário quiser baixar um vídeo.
 
-Se o usuário pedir para procurar ou mostrar vídeos de alguém ou sobre algum tema (ex: "procura vídeo do Felca", "quero ver algo do Ei Nerd", "vídeo sobre eletricidade"), use:
-{{
-  "controller": "youtube",
-  "action": "buscar_video",
-  "params": {{
-    "query": "tema ou nome procurado"
-  }}
-}}
+    Se o usuário pedir para procurar ou mostrar vídeos de alguém ou sobre algum tema (ex: "procura vídeo do Felca", "quero ver algo do Ei Nerd", "vídeo sobre eletricidade"), use:
+    {{
+      "controller": "youtube",
+      "action": "buscar_video",
+      "params": {{
+        "query": "tema ou nome procurado"
+      }}
+    }}
 
-Para projetos locais:
-- Se o usuário pedir para abrir um projeto local da pasta GitHub (ex: "abra o projeto do Fitout"), retorne:
-{{
-  "controller": "os",
-  "action": "abrir_projeto",
-  "params": {{
-    "query": "nome_do_projeto"
-  }}
-}}
+    Para projetos locais:
+    - Se o usuário pedir para abrir um projeto local da pasta GitHub (ex: "abra o projeto do Fitout"), retorne:
+    {{
+      "controller": "os",
+      "action": "abrir_projeto",
+      "params": {{
+        "query": "nome_do_projeto"
+      }}
+    }}
 
-Para verificar o status da máquina (CPU, RAM, Disco):
-- Se o usuário quiser consultar o status atual do sistema, use:
-{{
-  "controller": "os",
-  "action": "status_sistema",
-  "params": {{}}
-}}
+    Para verificar o status da máquina (CPU, RAM, Disco):
+    - Se o usuário quiser consultar o status atual do sistema, use:
+    {{
+      "controller": "os",
+      "action": "status_sistema",
+      "params": {{}}
+    }}
 
-Se ele pedir dicas de como melhorar desempenho, resolver problemas de lentidão, etc, retorne:
-{{
-  "controller": "openai",
-  "action": "responder",
-  "params": {{
-    "query": "texto original da pergunta"
-  }}
-}}
+    Se ele pedir dicas de como melhorar desempenho, resolver problemas de lentidão, etc, retorne:
+    {{
+      "controller": "openai",
+      "action": "responder",
+      "params": {{
+        "query": "texto original da pergunta"
+      }}
+    }}
 
-Para Spotify:
-- Se o usuário pedir para tocar uma música, playlist ou álbum:
-{{
-  "controller": "spotify",
-  "action": "tocar",
-  "params": {{
-    "query": "nome da música ou artista"
-  }}
-}}
+    Para Spotify:
+    - Se o usuário pedir para tocar uma música, playlist ou álbum:
+    {{
+      "controller": "spotify",
+      "action": "tocar",
+      "params": {{
+        "query": "nome da música ou artista"
+      }}
+    }}
 
-Se não conseguir classificar claramente o comando, envie:
-{{
-  "controller": "openai",
-  "action": "responder",
-  "params": {{
-    "query": "texto original da pergunta"
-  }}
-}}
-- Se o usuário pedir para PARAR a música (ex: "pare a música", "para de tocar", "stop"), retorne:
-{{
-  "controller": "spotify",
-  "action": "parar_musica",
-  "params": {{}}
-}}
-- Para perguntas sobre PROGRAMAÇÃO, CÓDIGO, SCRIPTS, ALGORITMOS, BUGS, PYTHON, JAVASCRIPT, etc., use:
-{{
-  "controller": "code_ai",
-  "action": "gerar_codigo"
-}}
-Comando do usuário: "{user_input}"
-Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
-"""
+    Se não conseguir classificar claramente o comando, envie:
+    {{
+      "controller": "openai",
+      "action": "responder",
+      "params": {{
+        "query": "texto original da pergunta"
+      }}
+    }}
+    - Se o usuário pedir para PARAR a música (ex: "pare a música", "para de tocar", "stop"), retorne:
+    {{
+      "controller": "spotify",
+      "action": "parar_musica",
+      "params": {{}}
+    }}
+    - Para perguntas sobre PROGRAMAÇÃO, CÓDIGO, SCRIPTS, ALGORITMOS, BUGS, PYTHON, JAVASCRIPT, etc., use:
+    {{
+      "controller": "code_ai",
+      "action": "gerar_codigo"
+    }}
+
+    Para enviar mensagem no WhatsApp:
+    - Se o usuário pedir para enviar uma mensagem exata (entre aspas ou dizendo "exatamente assim"), envie o texto literalmente, sem modificar e sem passar pela IA.
+    - Se o usuário pedir para enviar uma mensagem genérica, gere uma mensagem simpática, educada, e termine com: "Mensagem enviada pelo assistente do Filipe."
+    - Fale sempre como assistente, nunca como o próprio usuário.
+
+    Comando do usuário: "{user_input}"
+    Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
+    """
 
     try:
         response_text = ai_service.question_to_chatgpt([{"role": "user", "content": prompt}])
@@ -119,6 +142,7 @@ Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
         params = data.get("params", {})
 
         conversation_history.append({"role": "user", "content": user_input})
+
         if controller == "code_ai":
             response = code_ai_service.get_code_suggestion(conversation_history)
             print(response)
@@ -183,6 +207,32 @@ Responda apenas com o JSON. Não adicione explicações ou texto fora do JSON.
             openai_response = ai_service.question_to_chatgpt(conversation_history + [{"role": "user", "content": query}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             print(openai_response)
+
+        elif controller == "whatsapp":
+            from src.services.whatsapp_service import enviar_mensagem
+            contato = params.get("contato") or params.get("query") or params.get("destinatario")
+            contexto = params.get("contexto") or params.get("mensagem") or params.get("msg") or params.get("texto")
+            if contato and contexto:
+                texto_exato = mensagem_exata(contexto)
+                if texto_exato:
+                    mensagem_final = texto_exato
+                else:
+                    prompt_ia = f"""
+Gere uma mensagem de WhatsApp como eu pedir, para enviar para {contato}.
+Contexto/intenção: {contexto}
+Assine no final: 'Mensagem enviada por T.H.O.R.'
+Fale como se fosse o assistente do usuário, não o próprio usuário.
+Não use emojis, apenas texto.
+Responda apenas com a mensagem a ser enviada, sem explicações.
+"""
+                    mensagem_final = ai_service.question_to_chatgpt(
+                        conversation_history + [{"role": "user", "content": prompt_ia}]
+                    ).strip()
+                result = enviar_mensagem(contato, mensagem_final)
+                print(result)
+                conversation_history.append({"role": "assistant", "content": result})
+            else:
+                print("[X] Faltou o contato ou contexto para enviar mensagem no WhatsApp.")
 
         else:
             fallback_response = ai_service.question_to_chatgpt(conversation_history + [{"role": "user", "content": user_input}])
