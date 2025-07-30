@@ -382,5 +382,85 @@
     {
         "role": "assistant",
         "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "como que ta meu pc?"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o youtube pra mim"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o canal do rezende evil no youtube pra mim"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "toca um ozzy ousvorne pra mim"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "pare a musica"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "toque acdc"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "mande uma mensagem de feliz aniversario para meu amigo Pedro"
+    },
+    {
+        "role": "assistant",
+        "content": "Mensagem enviada para Pedro!"
+    },
+    {
+        "role": "user",
+        "content": "thor meu dia foi foda minha namorada fez um teste de gravidez e deu negativo estou muito feliz"
+    },
+    {
+        "role": "assistant",
+        "content": "Que demais, cara! Parabéns! Que notícia ótima! Fico muito feliz por você! 👊"
+    },
+    {
+        "role": "user",
+        "content": "pare a musica"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o notion pra mim"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
     }
 ]
