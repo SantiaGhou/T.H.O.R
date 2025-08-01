@@ -132,7 +132,8 @@ def open_program(params):
     nome = params.get("query", "")
     caminho = encontrar_executavel(nome)
     if caminho:
-        subprocess.Popen(caminho)
+        subprocess.Popen(caminho, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print(f"Programa '{nome}' aberto.")
         return f"{nome} aberto"
     return f"Não encontrei nenhum programa relacionado a: {nome}"
 

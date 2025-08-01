@@ -45,132 +45,118 @@ conversation_history = load_history()
 def process_command(user_input: str):
     global conversation_history
 
-    prompt = fPROMPT_THOR = """
-Você é o cérebro do T.H.O.R., um sistema avançado de interpretação de comandos do usuário. Sua função é analisar a intenção do usuário e retornar apenas UM objeto JSON válido e bem-formado, seguindo rigorosamente o formato abaixo:
+    prompt = f"""
+Você é o cérebro do T.H.O.R., um sistema de interpretação de comandos do usuário. Seu objetivo é analisar a intenção do usuário e retornar um JSON bem-formado no formato:
 
-{
+{{
   "controller": "<nome_do_serviço>",
   "action": "<ação_a_ser_executada>",
-  "params": {
+  "params": {{
     "chave": "valor"
-  }
-}
+  }}
+}}
 
-REGRAS GERAIS:
-1. A resposta deve ser exclusivamente um JSON válido. Não adicione comentários, explicações, saudações ou qualquer texto fora do JSON.
-2. Sempre inclua os campos: "controller", "action" e "params". Se não houver parâmetros, use "params": {}.
-3. Todos os valores devem ser strings, exceto quando claramente for um número.
-4. Normalize os valores: remova espaços, quebras de linha e caracteres desnecessários.
+Regras:
+1. Responda exclusivamente com o JSON válido. Não coloque nada fora do JSON.
+2. Sempre inclua: "controller", "action" e "params". Se não houver parâmetros, use "params": {{}}
+3. Todos os valores são string, exceto quando claramente número.
+4. Normalize textos dos parâmetros.
 
-MÓDULOS E FORMATAÇÃO:
+MÓDULOS SUPORTADOS:
 
-YouTube:
-- Se receber um link do YouTube ou o comando para baixar vídeo:
-{
+### YouTube:
+- Se o usuário pedir para baixar vídeo e fornecer um link:
+{{
   "controller": "youtube",
   "action": "baixar_video",
-  "params": {
-    "link": "<link_do_video>"
-  }
-}
-- Se receber comando de busca de vídeos:
-{
+  "params": {{"link": "<link_do_video>"}}
+}}
+- Se pedir para buscar vídeos:
+{{
   "controller": "youtube",
   "action": "buscar_video",
-  "params": {
-    "query": "<termo_de_busca>"
-  }
-}
+  "params": {{"query": "<termo_busca>"}}
+}}
+- Se pedir para abrir o YouTube ou abrir canal (ex: "abre o YouTube", "abre o canal do fulano"):
+{{
+  "controller": "youtube",
+  "action": "abrir_home",
+  "params": {{"query": "<nome_canal>"}}
+}}
+(O campo query pode ser vazio se não for canal específico)
 
-Projetos Locais (GitHub):
-- Se o comando for abrir um projeto:
-{
+### Projetos Locais:
+{{
   "controller": "os",
   "action": "abrir_projeto",
-  "params": {
-    "query": "<nome_do_projeto>"
-  }
-}
+  "params": {{"query": "<nome_do_projeto>"}}
+}}
 
-Programas Instalados:
-- Se o comando for abrir um programa:
-{
+### Programas Instalados:
+{{
   "controller": "os",
   "action": "abrir_programa",
-  "params": {
-    "query": "<nome_do_programa>"
-  }
-}
+  "params": {{"query": "<nome_do_programa>"}}
+}}
 
-Status do Sistema:
-- Para checar CPU, RAM ou Disco:
-{
+### Status do Sistema:
+{{
   "controller": "os",
   "action": "status_sistema",
-  "params": {}
-}
-- Para data e hora:
-{
+  "params": {{}}
+}}
+{{
   "controller": "os",
   "action": "get_data",
-  "params": {}
-}
+  "params": {{}}
+}}
 
-Diagnóstico e Desempenho:
-- Para dicas de performance, lentidão ou solução de problemas:
-{
+### Diagnóstico e Desempenho:
+{{
   "controller": "openai",
   "action": "responder",
-  "params": {
-    "query": "<texto_original_da_pergunta>"
-  }
-}
+  "params": {{"query": "<texto_original_da_pergunta>"}}
+}}
 
-Spotify:
-- Para tocar música, playlist ou álbum:
-{
+### Spotify:
+{{
   "controller": "spotify",
   "action": "tocar",
-  "params": {
-    "query": "<nome_da_musica_ou_artista>"
-  }
-}
-- Para parar música:
-{
+  "params": {{"query": "<nome_musica_ou_artista>"}}
+}}
+{{
   "controller": "spotify",
   "action": "parar_musica",
-  "params": {}
-}
+  "params": {{}}
+}}
 
-WhatsApp:
-- Para enviar mensagem, siga estas regras:
-  - Se for mensagem exata (entre aspas ou explicitamente "exatamente assim"), envie literalmente.
-  - Caso contrário, monte a mensagem finalizando com "Mensagem enviada por T.H.O.R.".
-Exemplo:
-{
+### WhatsApp:
+- Só envie mensagem se o usuário indicar claramente o nome do contato e o que deve ser enviado. Se não tiver certeza do nome do contato ou da mensagem, **não preencha nenhum campo e deixe params vazio**.
+- Se o usuário pedir para enviar uma mensagem, mas não fornecer o contato ou a mensagem, solicite esses dados.
+- Se o usuário fornecer um contato, mas não a mensagem, pergunte o que enviar.
+{{
   "controller": "whatsapp",
   "action": "enviar_mensagem",
-  "params": {
-    "contato": "<nome_do_contato>",
-    "mensagem": "<mensagem_final>"
-  }
-}
+  "params": {{"contato": "<nome_contato>", "mensagem": "<mensagem_final>"}}
+}}
 
-Programação:
-- Para dúvidas, bugs, scripts ou algoritmos:
-{
+### Programação:
+{{
   "controller": "code_ai",
   "action": "gerar_codigo",
-  "params": {
-    "query": "<texto_da_pergunta>"
-  }
-}
+  "params": {{"query": "<texto_da_pergunta>"}}
+}}
 
-Comando do usuário: "{user_input}"
+### Qualquer coisa que não se encaixe nos módulos acima:
+{{
+  "controller": "openai",
+  "action": "responder",
+  "params": {{"query": "<mensagem_original>"}}
+}}
+
+COMANDO DO USUÁRIO: "{user_input}"
 Responda SOMENTE com o JSON.
 """
-
-
 
     try:
         response_text = ai_service.question_to_chatgpt([{"role": "user", "content": prompt}])
@@ -188,25 +174,33 @@ Responda SOMENTE com o JSON.
             print(response)
             conversation_history.append({"role": "assistant", "content": response})
 
-        if controller == "youtube":
+        elif controller == "youtube":
             if action == "baixar_video":
-                link = (
-                    params.get("link")
-                    or params.get("query")
-                    or params.get("termo")
-                )
-                if not link:
-                    print("[?] Cole aqui o link do vídeo que você quer baixar:")
+                link = params.get("link")
+                if not link or not ("youtube.com" in link or "youtu.be" in link):
+                    print("[?] Cole aqui o link do vídeo do YouTube que você quer baixar:")
                     link = input(">>> ")
-                if link:
+                if link and ("youtube.com" in link or "youtu.be" in link):
                     from src.services.youtube_service import baixar_video
                     result = baixar_video(link)
                     print(result)
                 else:
-                    print("[X] Nenhum link informado. Operação cancelada.")
-            else:
-                print("[INFO] Chamando youtube_service...")
+                    print("[X] Nenhum link válido informado. Operação cancelada.")
+            elif action == "buscar_video":
                 youtube_service.youtube(data)
+            elif action == "abrir_home":
+                canal = params.get("query", "").strip()
+                import webbrowser
+                if canal:
+                    # tenta abrir canal no formato correto (pode adaptar pra @ se preferir)
+                    canal_url = canal.replace("canal", "").replace(" ", "")
+                    url = f"https://www.youtube.com/@{canal_url}"
+                else:
+                    url = "https://www.youtube.com/"
+                webbrowser.open(url)
+                print(f"Abrindo YouTube{' no canal ' + canal if canal else ''}...")
+            else:
+                print("[X] Ação do YouTube não reconhecida.")
 
             conversation_history.append({"role": "assistant", "content": "Comando YouTube executado."})
 
@@ -224,9 +218,8 @@ Responda SOMENTE com o JSON.
                 from src.services.os_service import get_data
                 result = get_data()
                 print(result)
-                conversation_history.append({"role":"assistant","content":result})
-            conversation_history.append({"role":"assistant","content":"Comando OS executado."})
-
+                conversation_history.append({"role": "assistant", "content": result})
+            conversation_history.append({"role": "assistant", "content": "Comando OS executado."})
 
         elif controller == "spotify":
             if action == "tocar":
@@ -247,50 +240,47 @@ Responda SOMENTE com o JSON.
 
             conversation_history.append({"role": "assistant", "content": "Comando Spotify executado."})
 
-        elif controller == "openai":
+        elif controller == "openai" and action == "responder":
             query = params.get("query", user_input)
-            openai_response = ai_service.question_to_chatgpt(conversation_history + [{"role": "user", "content": query}])
+            openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": query}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             print(openai_response)
 
         elif controller == "whatsapp":
-            from src.services.whatsapp_service import enviar_mensagem
+            from src.services.whatsapp_service import enviar_mensagem, gerar_mensagem_ia
             contato = params.get("contato") or params.get("query") or params.get("destinatario")
-            contexto = params.get("contexto") or params.get("mensagem") or params.get("msg") or params.get("texto")
+            mensagem = params.get("mensagem") or params.get("contexto") or params.get("msg") or params.get("texto")
+
             if not contato:
                 contato = input("Pra quem você quer enviar? ").strip()
-            if not contexto:
+
+            if not mensagem:
                 contexto = input(f"O que você quer enviar para {contato}? ").strip()
-            if contato and contexto:
-                texto_exato = mensagem_exata(contexto)
-                if texto_exato:
-                    mensagem_final = texto_exato
-                else:
-                    prompt_ia = f"""
-Gere uma mensagem de WhatsApp como eu pedir, para enviar para {contato}.
-Contexto/intenção: {contexto}
-Assine no final: 'Mensagem enviada por T.H.O.R.'
-Fale como se fosse o assistente do usuário, não o próprio usuário.
-Não use emojis, apenas texto.
-Responda apenas com a mensagem a ser enviada, sem explicações.
-"""
-                    mensagem_final = ai_service.question_to_chatgpt(
-                        conversation_history + [{"role": "user", "content": prompt_ia}]
-                    ).strip()
-                result = enviar_mensagem(contato, mensagem_final)
-                print(result)
-                conversation_history.append({"role": "assistant", "content": result})
             else:
-                print("[X] Faltou o contato ou contexto para enviar mensagem no WhatsApp.")
+                contexto = mensagem
+
+            mensagem = gerar_mensagem_ia(contato, contexto)
+
+            tentativa = enviar_mensagem(contato, mensagem)
+            if tentativa and "[X]" not in tentativa:
+                print(tentativa)
+                conversation_history.append({"role": "assistant", "content": tentativa})
+                return
+
+
+
+
+
 
         else:
-            fallback_response = ai_service.question_to_chatgpt(conversation_history + [{"role": "user", "content": user_input}])
-            conversation_history.append({"role": "assistant", "content": fallback_response})
-            print(fallback_response)
+           
+            openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
+            conversation_history.append({"role": "assistant", "content": openai_response})
+            print(openai_response)
 
     except Exception as e:
         print(f"[X] Erro no processamento do comando: {e}")
-        fallback_response = ai_service.question_to_chatgpt(conversation_history + [{"role": "user", "content": user_input}])
+        fallback_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
         conversation_history.append({"role": "assistant", "content": fallback_response})
         print(fallback_response)
 
