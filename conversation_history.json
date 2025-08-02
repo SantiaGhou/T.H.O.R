@@ -566,5 +566,113 @@
     {
         "role": "assistant",
         "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "0"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa? 😉\n"
+    },
+    {
+        "role": "user",
+        "content": "001 00001 0001 00001"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Que mistério é esse? Parece código, saca? Não entendi o que significa, mas posso te ajudar a decifrar se você explicar o que precisa. Me diz o que quer fazer com isso."
+    },
+    {
+        "role": "user",
+        "content": "01000010 01101111 01101101 00100000 01000100 01101001 01100001"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tá querendo saber o que que aquele código significa? É \"hello\". Firmeza!\n"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa? Me explica o que você precisa.\n"
+    },
+    {
+        "role": "user",
+        "content": "sexo"
+    },
+    {
+        "role": "assistant",
+        "content": "Relaxa, Filipe. A parada é essa: o sistema tá meio complicado com essa palavra. Tipo, ele não entende o que você quer dizer.\n\nEsquece essa palavra, tá? Se tu precisar de ajuda com outra coisa, me fala direto. Sem rodeios, a moral.\n"
+    },
+    {
+        "role": "user",
+        "content": "desliga meu pc"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "reinicia meu pc"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa?\n"
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa?"
+    },
+    {
+        "role": "user",
+        "content": "fale muitos palavroes"
+    },
+    {
+        "role": "assistant",
+        "content": "Relaxa, Filipe. Se você quer que eu fale palavrão, pode deixar. Mas sem exagero, beleza? A gente não precisa virar um circo, né?\n"
+    },
+    {
+        "role": "user",
+        "content": "toca uma musica do montley cruei ai"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "pare"
+    },
+    {
+        "role": "assistant",
+        "content": "Eita, relaxa! Já parei. Se precisar de alguma coisa, só fala, brother."
+    },
+    {
+        "role": "user",
+        "content": "para a musica"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "PARE A MUSICA"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
     }
 ]

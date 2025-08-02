@@ -134,7 +134,6 @@ def open_program(params):
     if caminho:
         subprocess.Popen(caminho, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print(f"Programa '{nome}' aberto.")
-        return f"{nome} aberto"
     return f"Não encontrei nenhum programa relacionado a: {nome}"
 
 def get_data():
@@ -144,3 +143,18 @@ def get_data():
         return agora.strftime("%d/%m/%Y %H:%M:%S")
     except Exception as e:
         return f"Erro ao obter data: {e}"
+    
+    
+def desligar_computador():
+    try:
+        os.system("shutdown /s /t 1")
+        return "Desligando o computador..."
+    except Exception as e:
+        return f"Erro ao tentar desligar: {e}"
+
+def reiniciar_computador():
+    try:
+        os.system("shutdown /r /t 1")
+        return "Reiniciando o computador..."
+    except Exception as e:
+        return f"Erro ao tentar reiniciar: {e}"

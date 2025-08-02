@@ -2,6 +2,9 @@ import json
 import os
 import re
 from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service
+from src.interfaces.output.output_voice import fale
+
+
 from ..interfaces.input.input_interface import text_input
 
 HISTORY_FILE = "conversation_history.json"
@@ -66,97 +69,108 @@ MÓDULOS SUPORTADOS:
 
 ### YouTube:
 - Se o usuário pedir para baixar vídeo e fornecer um link:
-{{
+{{{{ 
   "controller": "youtube",
   "action": "baixar_video",
   "params": {{"link": "<link_do_video>"}}
-}}
+}}}}
 - Se pedir para buscar vídeos:
-{{
+{{{{ 
   "controller": "youtube",
   "action": "buscar_video",
   "params": {{"query": "<termo_busca>"}}
-}}
+}}}}
 - Se pedir para abrir o YouTube ou abrir canal (ex: "abre o YouTube", "abre o canal do fulano"):
-{{
+{{{{ 
   "controller": "youtube",
   "action": "abrir_home",
   "params": {{"query": "<nome_canal>"}}
-}}
+}}}}
 (O campo query pode ser vazio se não for canal específico)
 
 ### Projetos Locais:
-{{
+{{{{ 
   "controller": "os",
   "action": "abrir_projeto",
   "params": {{"query": "<nome_do_projeto>"}}
-}}
+}}}}
 
 ### Programas Instalados:
-{{
+{{{{ 
   "controller": "os",
   "action": "abrir_programa",
   "params": {{"query": "<nome_do_programa>"}}
-}}
+}}}}
 
 ### Status do Sistema:
-{{
+{{{{ 
   "controller": "os",
   "action": "status_sistema",
   "params": {{}}
-}}
-{{
+}}}}
+{{{{ 
   "controller": "os",
   "action": "get_data",
   "params": {{}}
-}}
+}}}}
+{{{{ 
+  "controller": "os",
+  "action": "desligar",
+  "params": {{}}
+}}}}
+{{{{ 
+  "controller": "os",
+  "action": "reiniciar",
+  "params": {{}}
+}}}}
 
 ### Diagnóstico e Desempenho:
-{{
+{{{{ 
   "controller": "openai",
   "action": "responder",
   "params": {{"query": "<texto_original_da_pergunta>"}}
-}}
+}}}}
 
 ### Spotify:
-{{
+{{{{ 
   "controller": "spotify",
   "action": "tocar",
   "params": {{"query": "<nome_musica_ou_artista>"}}
-}}
-{{
+}}}}
+{{{{ 
   "controller": "spotify",
   "action": "parar_musica",
   "params": {{}}
-}}
+}}}}
 
 ### WhatsApp:
 - Só envie mensagem se o usuário indicar claramente o nome do contato e o que deve ser enviado. Se não tiver certeza do nome do contato ou da mensagem, **não preencha nenhum campo e deixe params vazio**.
 - Se o usuário pedir para enviar uma mensagem, mas não fornecer o contato ou a mensagem, solicite esses dados.
 - Se o usuário fornecer um contato, mas não a mensagem, pergunte o que enviar.
-{{
+{{{{ 
   "controller": "whatsapp",
   "action": "enviar_mensagem",
   "params": {{"contato": "<nome_contato>", "mensagem": "<mensagem_final>"}}
-}}
+}}}}
 
 ### Programação:
-{{
+{{{{ 
   "controller": "code_ai",
   "action": "gerar_codigo",
   "params": {{"query": "<texto_da_pergunta>"}}
-}}
+}}}}
 
 ### Qualquer coisa que não se encaixe nos módulos acima:
-{{
+{{{{ 
   "controller": "openai",
   "action": "responder",
   "params": {{"query": "<mensagem_original>"}}
-}}
+}}}}
 
 COMANDO DO USUÁRIO: "{user_input}"
 Responda SOMENTE com o JSON.
 """
+
 
     try:
         response_text = ai_service.question_to_chatgpt([{"role": "user", "content": prompt}])
@@ -192,15 +206,17 @@ Responda SOMENTE com o JSON.
                 canal = params.get("query", "").strip()
                 import webbrowser
                 if canal:
-                    # tenta abrir canal no formato correto (pode adaptar pra @ se preferir)
+                   
                     canal_url = canal.replace("canal", "").replace(" ", "")
                     url = f"https://www.youtube.com/@{canal_url}"
                 else:
                     url = "https://www.youtube.com/"
                 webbrowser.open(url)
                 print(f"Abrindo YouTube{' no canal ' + canal if canal else ''}...")
+                fale(f"Abrindo YouTube{' no canal ' + canal if canal else ''}...")
             else:
                 print("[X] Ação do YouTube não reconhecida.")
+            fale("Comando YouTube executado.")
 
             conversation_history.append({"role": "assistant", "content": "Comando YouTube executado."})
 
@@ -211,6 +227,7 @@ Responda SOMENTE com o JSON.
             elif action == "status_sistema":
                 from src.services.os_service import get_system_status
                 print(get_system_status())
+                fale(get_system_status())
             elif action == "abrir_programa":
                 from src.services.os_service import open_program
                 print(open_program(params))
@@ -219,7 +236,15 @@ Responda SOMENTE com o JSON.
                 result = get_data()
                 print(result)
                 conversation_history.append({"role": "assistant", "content": result})
+            elif action == "desligar":
+                from src.services.os_service import desligar_computador
+                print(desligar_computador())
+            elif action == "reiniciar":
+                from src.services.os_service import reiniciar_computador
+                print(reiniciar_computador())
+
             conversation_history.append({"role": "assistant", "content": "Comando OS executado."})
+
 
         elif controller == "spotify":
             if action == "tocar":
@@ -237,14 +262,17 @@ Responda SOMENTE com o JSON.
             elif action == "parar_musica":
                 result = spotify_service.parar_musica()
                 print(result)
+                fale(result)
 
             conversation_history.append({"role": "assistant", "content": "Comando Spotify executado."})
+            
 
         elif controller == "openai" and action == "responder":
             query = params.get("query", user_input)
             openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": query}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             print(openai_response)
+            fale(openai_response)
 
         elif controller == "whatsapp":
             from src.services.whatsapp_service import enviar_mensagem, gerar_mensagem_ia
@@ -264,6 +292,7 @@ Responda SOMENTE com o JSON.
             tentativa = enviar_mensagem(contato, mensagem)
             if tentativa and "[X]" not in tentativa:
                 print(tentativa)
+                fale(tentativa)
                 conversation_history.append({"role": "assistant", "content": tentativa})
                 return
 
@@ -277,6 +306,7 @@ Responda SOMENTE com o JSON.
             openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             print(openai_response)
+            fale(openai_response)
 
     except Exception as e:
         print(f"[X] Erro no processamento do comando: {e}")
