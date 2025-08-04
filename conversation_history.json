@@ -730,5 +730,13 @@
     {
         "role": "assistant",
         "content": "E aí, Filipe? Tudo sussa?"
+    },
+    {
+        "role": "user",
+        "content": "ola"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa?\n"
     }
 ]

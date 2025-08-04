@@ -2,7 +2,7 @@ import json
 import os
 import re
 from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service
-from src.interfaces.output.output_voice import fale
+
 
 
 from ..interfaces.input.input_interface import text_input
@@ -213,10 +213,10 @@ Responda SOMENTE com o JSON.
                     url = "https://www.youtube.com/"
                 webbrowser.open(url)
                 print(f"Abrindo YouTube{' no canal ' + canal if canal else ''}...")
-                fale(f"Abrindo YouTube{' no canal ' + canal if canal else ''}...")
+             
             else:
                 print("[X] Ação do YouTube não reconhecida.")
-            fale("Comando YouTube executado.")
+          
 
             conversation_history.append({"role": "assistant", "content": "Comando YouTube executado."})
 
@@ -227,7 +227,7 @@ Responda SOMENTE com o JSON.
             elif action == "status_sistema":
                 from src.services.os_service import get_system_status
                 print(get_system_status())
-                fale(get_system_status())
+             
             elif action == "abrir_programa":
                 from src.services.os_service import open_program
                 print(open_program(params))
@@ -262,7 +262,7 @@ Responda SOMENTE com o JSON.
             elif action == "parar_musica":
                 result = spotify_service.parar_musica()
                 print(result)
-                fale(result)
+             
 
             conversation_history.append({"role": "assistant", "content": "Comando Spotify executado."})
             
@@ -272,7 +272,7 @@ Responda SOMENTE com o JSON.
             openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": query}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             print(openai_response)
-            fale(openai_response)
+         
 
         elif controller == "whatsapp":
             from src.services.whatsapp_service import enviar_mensagem, gerar_mensagem_ia
@@ -292,7 +292,7 @@ Responda SOMENTE com o JSON.
             tentativa = enviar_mensagem(contato, mensagem)
             if tentativa and "[X]" not in tentativa:
                 print(tentativa)
-                fale(tentativa)
+             
                 conversation_history.append({"role": "assistant", "content": tentativa})
                 return
 
@@ -306,7 +306,7 @@ Responda SOMENTE com o JSON.
             openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             print(openai_response)
-            fale(openai_response)
+           
 
     except Exception as e:
         print(f"[X] Erro no processamento do comando: {e}")
