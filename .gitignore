@@ -180,3 +180,5 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 conversation_history.json
+/venv
+/venv-thor

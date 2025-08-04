@@ -674,5 +674,53 @@
     {
         "role": "assistant",
         "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa?"
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa?"
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tudo sussa?\n"
+    },
+    {
+        "role": "user",
+        "content": "tudo sim thor"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Tá ligado no que eu tô falando, né? Sem enrolação.\n"
+    },
+    {
+        "role": "user",
+        "content": "quais modelos temos disponiveis na coqui tts"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe!\n\nNa Coqui TTS, a parada é essa:\n\n*   **Parla:** É o mais famoso, fácil de usar e boa pra voz masculina.\n*   **VoiICE:** Já é um pouco mais avançado, tem mais opções de voz e timbre.\n*   **Feiyu:** É um modelo novo, focado em voz feminina, está numa fase de testes.\n\nBasicamente, esses são os que estão disponíveis agora. Vale a pena testar os três e ver qual se encaixa melhor no que você precisa!"
+    },
+    {
+        "role": "user",
+        "content": "a"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe? Só um \"a\" aí, beleza? Tudo sussa contigo?"
     }
 ]
