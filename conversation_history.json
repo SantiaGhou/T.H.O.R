@@ -134,5 +134,49 @@
     {
         "role": "assistant",
         "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "Olá Filipe. ⚡️\n\nPronto para te ajudar a dominar o mundo hoje? 😉 Ou pelo menos uma parte dele.  \n\n\n\nO que primeiro ocupa sua mente brilhante? 🤔\n"
+    },
+    {
+        "role": "user",
+        "content": "abre o spotfy ai"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando Spotify executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o discord"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "abre o Discord"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "Abre o Whatsapp"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "Comando OS executado."
     }
 ]

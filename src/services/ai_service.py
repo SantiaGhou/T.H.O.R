@@ -4,7 +4,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama"
+)
 
 def question_to_chatgpt(history: List[Dict[str, str]]) -> str:
     try:
@@ -27,9 +30,9 @@ Você deve:
         ] + history
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gemma2:9b",
             messages=full_history
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"Deu B.O. pra conectar no modelo da OpenAI: {e}"
+        return f"Deu B.O. pra conectar no modelo do Ollama: {e}"
