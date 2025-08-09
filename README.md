@@ -1,6 +1,4 @@
-
-  
-# T.H.O.R. - Technological Helper for Operations and Response
+  # T.H.O.R. - Technological Helper for Operations and Response
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/github/license/SantiaGhou/T.H.O.R)](LICENSE)
@@ -37,9 +35,9 @@
 O T.H.O.R. funciona com um fluxo de comando centralizado no `brain.py`, que atua como um roteador.
 
 ```bash
-            +----------------------+
-            |  Entrada do Usuário  |
-            +----------------------+
+            +--------------------------------+
+            |  Entrada do Usuário  (Whisper) |
+            +--------------------------------+
                      |
                      V
 +------------------------------------------+
