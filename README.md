@@ -92,7 +92,7 @@ V                    V                     V                     V
     -   Abra o terminal e puxe os modelos que o T.H.O.R. utiliza:
     ```bash
     # IA de conversação geral
-    ollama run gemma
+    ollama run gemma2:9b
 
     # IA especialista em código
     ollama run codegemma
@@ -130,6 +130,8 @@ V                    V                     V                     V
 5. Use o comando ``` npm i  & node server.js ```
 
 6. Escaneie o qrcode gerado e conecte ao seu whatsapp
+
+7. no ```.env``` adicione sua OPENAI_API_KEY para funcionar a func q da voz do T.H.O.R 
 
 ## Contribuição
 
