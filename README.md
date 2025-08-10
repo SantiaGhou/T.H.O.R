@@ -19,16 +19,20 @@
 
 ## Recursos
 
-- **Suporte a abrir o youtube e baixar videos:** utilizando o Pytube e o Webbrowser
-- **Suporte a envio de mensagens no Whatsapp** utilizando o whatsapp webjs
-- **IA Local-First:** Opera primariamente com modelos de linguagem rodando localmente via **Ollama**, garantindo privacidade e funcionamento offline.
-- **Sistema de IA Dupla:** Utiliza um sistema de roteamento inteligente para direcionar as tarefas:
-    - **IA de Conversação Geral (Gemma):** Para diálogos, classificação de comandos e tarefas gerais.
-    - **IA Especialista em Código (CodeGemma):** Para gerar, analisar e responder perguntas sobre programação.
-- **Memória Persistente:** Lembra-se de conversas anteriores entre sessões, salvando o histórico em um arquivo local.
-- **Controle de Mídia:** Integração com o Spotify para tocar e pausar músicas.
-- **Operações de Sistema:** Capaz de executar comandos no sistema operacional, como abrir pastas de projetos e verificar o status de uso de CPU, RAM e disco.
-- **Arquitetura Modular:** Construído com uma clara separação entre o "cérebro" (lógica de decisão) e os "serviços" (executores de ação), facilitando a expansão.
+- **Hotword "Thor" sempre ativa**: chame o assistente por voz a qualquer momento, sem precisar digitar.
+- **Leitura de notícias**: integração com a API do **GNews** para ler as últimas notícias em voz alta.
+- **Sistema de Notas e Lembretes**: crie notas rápidas por voz e configure lembretes para o futuro.
+- **Suporte a abrir o YouTube e baixar vídeos**: utilizando o Pytube e o Webbrowser.
+- **Suporte a envio de mensagens no WhatsApp**: utilizando o WhatsApp WebJS.
+- **IA Local-First**: opera primariamente com modelos de linguagem rodando localmente via **Ollama**, garantindo privacidade e funcionamento offline.
+- **Sistema de IA Dupla**:
+    - **IA de Conversação Geral (Gemma)**: diálogos, classificação de comandos e tarefas gerais.
+    - **IA Especialista em Código (CodeGemma)**: gerar, analisar e responder perguntas sobre programação.
+- **Memória Persistente**: lembra de conversas anteriores entre sessões, salvando o histórico em um arquivo local.
+- **Controle de Mídia**: integração com o Spotify para tocar e pausar músicas.
+- **Operações de Sistema**: executar comandos no sistema operacional, como abrir pastas de projetos e verificar o status de uso de CPU, RAM e disco.
+- **Arquitetura Modular**: separação entre o "cérebro" (lógica de decisão) e os "serviços" (executores de ação), facilitando a expansão.
+
 
 ## Arquitetura do Projeto
 
