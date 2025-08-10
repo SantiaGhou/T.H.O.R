@@ -150,6 +150,18 @@ MÓDULOS SUPORTADOS:
   "params": {{}}
 }}}}
 
+### Notas:
+{{{{ 
+  "controller": "notes",
+  "action": "adicionar",
+  "params": {{"texto": "<conteúdo_da_nota_ou_lembrete>"}}
+}}}}
+{{{{ 
+  "controller": "notes",
+  "action": "listar",
+  "params": {{}}
+}}}}
+
 ### WhatsApp:
 - Só envie mensagem se o usuário indicar claramente o nome do contato e o que deve ser enviado. Se não tiver certeza do nome do contato ou da mensagem, não preencha nenhum campo e deixe params vazio.
 - Se o usuário pedir para enviar uma mensagem, mas não fornecer o contato ou a mensagem, solicite esses dados.
@@ -256,6 +268,18 @@ Responda SOMENTE com o JSON.
                 from src.services.os_service import reiniciar_computador
                 speak(reiniciar_computador())
             conversation_history.append({"role": "assistant", "content": "Comando OS executado."})
+
+        elif controller == "notes":
+            from src.services import notes_service
+            if action == "adicionar":
+                texto = params.get("texto", "")
+                notes_service.parse_and_add(texto)
+            elif action == "listar":
+                notes_service.list_notes()
+            else:
+                speak("[X] Ação de notas não reconhecida.")
+
+
 
         elif controller == "news":
             from src.services import news_service
