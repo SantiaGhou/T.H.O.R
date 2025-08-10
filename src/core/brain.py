@@ -1,7 +1,7 @@
 import json
 import os
 import re
-from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service
+from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service,news_service
 from ..interfaces.input.input_interface import text_input
 from ..interfaces.output.output_interface import say
 
@@ -143,6 +143,7 @@ MÓDULOS SUPORTADOS:
   "action": "tocar",
   "params": {{"query": "<nome_musica_ou_artista>"}}
 }}}}
+
 {{{{ 
   "controller": "spotify",
   "action": "parar_musica",
@@ -166,12 +167,23 @@ MÓDULOS SUPORTADOS:
   "params": {{"query": "<texto_da_pergunta>"}}
 }}}}
 
+### Notícias:
+{{{{ 
+  "controller": "news",
+  "action": "ler",
+  "params": {{"categoria": "<categoria_ou_vazio_para_geral>"}}
+}}}}
+
+
+
+
 ### Qualquer coisa que não se encaixe nos módulos acima:
 {{{{ 
   "controller": "openai",
   "action": "responder",
   "params": {{"query": "<mensagem_original>"}}
 }}}}
+
 
 COMANDO DO USUÁRIO: "{user_input}"
 Responda SOMENTE com o JSON.
@@ -244,6 +256,15 @@ Responda SOMENTE com o JSON.
                 from src.services.os_service import reiniciar_computador
                 speak(reiniciar_computador())
             conversation_history.append({"role": "assistant", "content": "Comando OS executado."})
+
+        elif controller == "news":
+            from src.services import news_service
+            if action == "ler":
+                categoria = params.get("categoria", "general")
+                news_service.read_news(categoria)
+            else:
+                speak("[X] Ação de notícias não reconhecida.")
+
 
         elif controller == "spotify":
             if action == "tocar":

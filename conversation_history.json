@@ -178,5 +178,45 @@
     {
         "role": "assistant",
         "content": "Comando OS executado."
+    },
+    {
+        "role": "user",
+        "content": "pode me dizer as noticias de hoje?"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe! Apanhar o que está rolando no mundo pode ser um desafio, né? Que tal te dar uma breve atualização sobre os principais acontecimentos? \n\nPrecisa de alguma notícia específica ou prefere um panorama geral?\n"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "me leia as noticias"
     }
 ]
