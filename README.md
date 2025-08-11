@@ -58,11 +58,11 @@ O T.H.O.R. funciona com um fluxo de comando centralizado no `brain.py`, que atua
                      |
                      | 2. Roteamento da Missão
                      |
-+--------------------+---------------------+---------------------+
-|                    |                     |                     |
-V                    V                     V                     V
++--------------------+---------------------+---------------------+------------+
+|                    |                     |                     |            |
+V                    V                     V                     V            V
 +--------------+   +---------------+   +-------------+   +--------------+
-| IA de Código |   | IA de Conversa|   |   Serviço   |   |   Serviço    | ...
+| IA de Código |   | IA de Conversa|   |   Serviço   |   |   Serviço    | ..etc..
 | (CodeGemma)  |   | (Gemma)       |   |  (Spotify)  |   |     (OS)     |
 +--------------+   +---------------+   +-------------+   +--------------+
 ```
