@@ -4,6 +4,7 @@ import re
 from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service,news_service
 from ..interfaces.input.input_interface import text_input
 from ..interfaces.output.output_interface import say
+from src.services import vision_service
 
 HISTORY_FILE = "conversation_history.json"
 
@@ -150,6 +151,26 @@ MÓDULOS SUPORTADOS:
   "params": {{}}
 }}}}
 
+### Visão por Webcam:
+{{{{ 
+  "controller": "vision",
+  "action": "descrever_cena",
+  "params": {{}}
+}}}}
+
+{{{{ 
+  "controller": "vision",
+  "action": "ler_texto",
+  "params": {{}}
+}}}}
+
+{{{{ 
+  "controller": "vision",
+  "action": "detectar_pessoas",
+  "params": {{}}
+}}}}
+
+
 ### Notas:
 {{{{ 
   "controller": "notes",
@@ -185,9 +206,6 @@ MÓDULOS SUPORTADOS:
   "action": "ler",
   "params": {{"categoria": "<categoria_ou_vazio_para_geral>"}}
 }}}}
-
-
-
 
 ### Qualquer coisa que não se encaixe nos módulos acima:
 {{{{ 
@@ -329,11 +347,24 @@ Responda SOMENTE com o JSON.
                 speak(tentativa)
                 conversation_history.append({"role": "assistant", "content": tentativa})
                 return
+        
+        elif controller == "vision":
+            if action == "descrever_cena":
+                speak(vision_service.descrever_cena())
+            elif action == "ler_texto":
+                speak(vision_service.ler_texto())
+            elif action == "detectar_pessoas":
+                speak(vision_service.detectar_pessoas())
+            else:
+                speak("[X] Ação de visão não reconhecida.")
+
 
         else:
             openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
             conversation_history.append({"role": "assistant", "content": openai_response})
             speak(openai_response)
+
+
 
     except Exception as e:
         speak(f"[X] Erro no processamento do comando: {e}")
