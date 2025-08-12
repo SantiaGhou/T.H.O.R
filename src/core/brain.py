@@ -1,54 +1,7 @@
 import json
-import os
-import re
-from src.services import youtube_service, ai_service, spotify_service, os_service, code_ai_service,news_service
-from ..interfaces.input.input_interface import text_input
-from ..interfaces.output.output_interface import say
-from src.services import vision_service
-
-HISTORY_FILE = "conversation_history.json"
-
-def speak(text):
-    print(text)
-    try:
-        if text and isinstance(text, str):
-            say(text)
-    except:
-        pass
-
-def save_history(history):
-    with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
-        json.dump(history, f, ensure_ascii=False, indent=4)
-
-def load_history():
-    if os.path.exists(HISTORY_FILE):
-        with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    else:
-        return []
-
-def extract_json(text: str) -> str:
-    start = text.find('{')
-    end = text.rfind('}') + 1
-    if start == -1 or end == -1:
-        raise ValueError("JSON não encontrado na resposta")
-    return text[start:end]
-
-def mensagem_exata(contexto):
-    match = re.search(r'"([^\"]+)"|\'([^\']+)\'', contexto)
-    if match:
-        return match.group(1) or match.group(2)
-    padroes = [
-        r"exatamente assim: (.+)",
-        r"envia isso: (.+)",
-        r"mensagem literal: (.+)",
-        r"manda (.+) exatamente"
-    ]
-    for padrao in padroes:
-        m2 = re.search(padrao, contexto, re.IGNORECASE)
-        if m2:
-            return m2.group(1).strip()
-    return None
+from src.core.utils import speak, save_history, load_history, extract_json
+from src.core.router import route_command
+from src.services import ai_service
 
 conversation_history = load_history()
 
@@ -221,157 +174,21 @@ Responda SOMENTE com o JSON.
 
     try:
         response_text = ai_service.question_to_chatgpt([{"role": "user", "content": prompt}])
-        json_str = extract_json(response_text)
-        data = json.loads(json_str)
+        data = json.loads(extract_json(response_text))
 
         controller = data.get("controller")
         action = data.get("action")
         params = data.get("params", {})
 
         conversation_history.append({"role": "user", "content": user_input})
-
-        if controller == "code_ai":
-            response = code_ai_service.get_code_suggestion(conversation_history)
-            speak(response)
-            conversation_history.append({"role": "assistant", "content": response})
-
-        elif controller == "youtube":
-            if action == "baixar_video":
-                link = params.get("link")
-                if not link or not ("youtube.com" in link or "youtu.be" in link):
-                    speak("[?] Cole aqui o link do vídeo do YouTube que você quer baixar:")
-                    link = input(">>> ")
-                if link and ("youtube.com" in link or "youtu.be" in link):
-                    from src.services.youtube_service import baixar_video
-                    result = baixar_video(link)
-                    speak(result)
-                else:
-                    speak("[X] Nenhum link válido informado. Operação cancelada.")
-            elif action == "buscar_video":
-                youtube_service.youtube(data)
-                speak("Busca no YouTube concluída.")
-            elif action == "abrir_home":
-                canal = params.get("query", "").strip()
-                import webbrowser
-                if canal:
-                    canal_url = canal.replace("canal", "").replace(" ", "")
-                    url = f"https://www.youtube.com/@{canal_url}"
-                else:
-                    url = "https://www.youtube.com/"
-                webbrowser.open(url)
-                speak(f"Abrindo YouTube{' no canal ' + canal if canal else ''}...")
-            else:
-                speak("[X] Ação do YouTube não reconhecida.")
-            conversation_history.append({"role": "assistant", "content": "Comando YouTube executado."})
-
-        elif controller == "os":
-            if action == "abrir_projeto":
-                from src.services.os_service import open_project
-                speak(open_project(params))
-            elif action == "status_sistema":
-                from src.services.os_service import get_system_status
-                speak(get_system_status())
-            elif action == "abrir_programa":
-                from src.services.os_service import open_program
-                speak(open_program(params))
-            elif action == "get_data":
-                from src.services.os_service import get_data
-                result = get_data()
-                speak(result)
-                conversation_history.append({"role": "assistant", "content": result})
-            elif action == "desligar":
-                from src.services.os_service import desligar_computador
-                speak(desligar_computador())
-            elif action == "reiniciar":
-                from src.services.os_service import reiniciar_computador
-                speak(reiniciar_computador())
-            conversation_history.append({"role": "assistant", "content": "Comando OS executado."})
-
-        elif controller == "notes":
-            from src.services import notes_service
-            if action == "adicionar":
-                texto = params.get("texto", "")
-                notes_service.parse_and_add(texto)
-            elif action == "listar":
-                notes_service.list_notes()
-            else:
-                speak("[X] Ação de notas não reconhecida.")
-
-
-
-        elif controller == "news":
-            from src.services import news_service
-            if action == "ler":
-                categoria = params.get("categoria", "general")
-                news_service.read_news(categoria)
-            else:
-                speak("[X] Ação de notícias não reconhecida.")
-
-
-        elif controller == "spotify":
-            if action == "tocar":
-                query = params.get("query") or params.get("uri")
-                if query:
-                    uri = query if query.startswith("spotify:") else spotify_service.buscar_uri_por_nome(query)
-                    if uri:
-                        result = spotify_service.tocar(uri)
-                        speak(result)
-                    else:
-                        speak(f"[X] Não foi possível encontrar a música: {query}")
-                else:
-                    speak("[X] Nenhum nome ou URI foi informado.")
-            elif action == "parar_musica":
-                result = spotify_service.parar_musica()
-                speak(result)
-            conversation_history.append({"role": "assistant", "content": "Comando Spotify executado."})
-
-        elif controller == "openai" and action == "responder":
-            query = params.get("query", user_input)
-            openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": query}])
-            conversation_history.append({"role": "assistant", "content": openai_response})
-            speak(openai_response)
-
-        elif controller == "whatsapp":
-            from src.services.whatsapp_service import enviar_mensagem, gerar_mensagem_ia
-            contato = params.get("contato") or params.get("query") or params.get("destinatario")
-            mensagem = params.get("mensagem") or params.get("contexto") or params.get("msg") or params.get("texto")
-            if not contato:
-                contato = input("Pra quem você quer enviar? ").strip()
-            if not mensagem:
-                contexto = input(f"O que você quer enviar para {contato}? ").strip()
-            else:
-                contexto = mensagem
-            mensagem = gerar_mensagem_ia(contato, contexto)
-            tentativa = enviar_mensagem(contato, mensagem)
-            if tentativa and "[X]" not in tentativa:
-                speak(tentativa)
-                conversation_history.append({"role": "assistant", "content": tentativa})
-                return
-        
-        elif controller == "vision":
-            if action == "descrever_cena":
-                speak(vision_service.descrever_cena())
-            elif action == "ler_texto":
-                speak(vision_service.ler_texto())
-            elif action == "detectar_pessoas":
-                speak(vision_service.detectar_pessoas())
-            else:
-                speak("[X] Ação de visão não reconhecida.")
-
-
-        else:
-            openai_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
-            conversation_history.append({"role": "assistant", "content": openai_response})
-            speak(openai_response)
-
-
+        route_command(controller, action, params, conversation_history, user_input)
 
     except Exception as e:
-        speak(f"[X] Erro no processamento do comando: {e}")
+        speak(f"[X] Erro no processamento: {e}")
         try:
-            fallback_response = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
-            conversation_history.append({"role": "assistant", "content": fallback_response})
-            speak(fallback_response)
+            fallback = ai_service.question_to_chatgpt([{"role": "user", "content": user_input}])
+            conversation_history.append({"role": "assistant", "content": fallback})
+            speak(fallback)
         except Exception as e2:
             speak(f"[X] Erro no fallback: {e2}")
     finally:

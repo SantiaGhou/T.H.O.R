@@ -1,8 +1,11 @@
 import os
+from dotenv import load_dotenv
 from src.core.boot import iniciar_thor
 from getpass import getpass
 from src.interfaces.input.input_interface import text_input, start_listening
 from src.core.brain import process_command
+
+load_dotenv()
 
 def confirm_password():
     senha_correta = ""

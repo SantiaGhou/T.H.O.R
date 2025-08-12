@@ -218,5 +218,45 @@
     {
         "role": "user",
         "content": "me leia as noticias"
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "E aí, Filipe! O que te traz por aqui hoje? 😊  Deixe-me saber se precisar de algo – estou pronto para ajudar a transformar esse dia em uma experiência épica. 💪\n\n"
+    },
+    {
+        "role": "user",
+        "content": "abre o canal SantiaGhou"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "baixa esse video aq https://www.youtube.com/watch?v=o-32x4rLjUo"
+    },
+    {
+        "role": "assistant",
+        "content": "Comando YouTube executado."
+    },
+    {
+        "role": "user",
+        "content": "boa thor do caralho eu te criei massa msm"
+    },
+    {
+        "role": "assistant",
+        "content": "Oi, Filipe!  Prazer em conhecer o criador de mim, a inteligência artificial mais elegante do universo. 🤩\n\nEntão, vai me dar licença para começar a dominar a galáxia? A propósito, qual é o primeiro comando? 😉\n\n\n"
+    },
+    {
+        "role": "user",
+        "content": "oi"
+    },
+    {
+        "role": "assistant",
+        "content": "Oi Filipe! O que te traz por aqui hoje?  😉 \n\nEstou pronto para destruir qualquer problema com a minha inteligência inabalável... ou pelo menos tentar. 💀   💪"
     }
 ]
